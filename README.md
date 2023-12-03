@@ -1,7 +1,8 @@
-<div style="text-align: center; display: flex; justify-content: flex-end;">
-    <h6 style="font-size: 35px; margin-top: 40px">Stefan AI 3</h6>
-    <img src="https://purepng.com/public/uploads/medium/under-construction-wf0.png" width="100px" style="margin-left: auto;"/>
-</div>
+<p align="center">
+  <img src="https://purepng.com/public/uploads/medium/under-construction-wf0.png" width="100px" alt="Under Construction">
+</p>
+<h1 align="center">Stefan AI 3</h1>
+
 
 <h3 style="font-size: 1.7rem">The Most Advanced Automated Social Media Content Maker</h3>
 
