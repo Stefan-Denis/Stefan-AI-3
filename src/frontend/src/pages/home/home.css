@@ -1,0 +1,36 @@
+@import url('../../colors.css');
+
+#home-container {
+    height: auto;
+    width: 100%;
+    padding: 10px;
+    user-select: none;
+}
+
+#home-content-container {
+    margin-top: 20px;
+    width: 100%;
+    height: calc(100% - 20px);
+}
+
+.card {
+    width: 200px;
+}
+
+#cards {
+    height: auto;
+    padding: 10px;
+    border-radius: 10px;
+    width: 100%;
+}
+
+#cards>h1 {
+    text-align: center;
+}
+
+#cards>div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+}

@@ -1,0 +1,16 @@
+#add-video-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    user-select: none;
+}
+
+#add-video-card {
+    width: 400px;
+}
+
+.float-right {
+    float: right;
+}

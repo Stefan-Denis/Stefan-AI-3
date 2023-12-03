@@ -1,0 +1,89 @@
+@font-face {
+    font-family: 'Mercedes Benz';
+    src: url('./fonts/Mercedes Benz.ttf') format('truetype');
+}
+
+@import url('colors.css');
+
+body {
+    background-color: var(--feldgrau) !important;
+    color: white !important;
+    overflow: hidden;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Mercedes Benz' !important;
+    /*add text border black*/
+}
+
+h1 {
+    font-size: 30px !important;
+    text-shadow: 0 0 10px white;
+}
+
+
+#container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+nav {
+    padding-top: 10px;
+    height: calc(100% - 30px);
+    width: 160px;
+    background-color: var(--gunmetal);
+    box-shadow: var(--box-shadow);
+    border-radius: 10px;
+    margin-right: 5px;
+    text-align: center;
+    user-select: none;
+    overflow-y: auto;
+}
+
+main {
+    box-shadow: var(--box-shadow);
+    height: calc(100% - 30px);
+    width: calc(100% - 210px);
+    background-color: var(--gunmetal);
+    margin-left: 15px;
+    border-radius: 10px;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+main>div {
+    width: 100%;
+    height: calc(100%);
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+/* Scrollbar Styles */
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #00000000;
+    border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: var(--feldgrau);
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

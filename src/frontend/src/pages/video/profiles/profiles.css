@@ -1,0 +1,29 @@
+#profile-manager-container {
+    padding: 10px;
+    width: 100%;
+    height: 100%;
+    user-select: none;
+}
+
+#profile-manager-container>p {
+    margin-left: 2px;
+    margin-top: -7px;
+}
+
+#span-AI-G3-Stefan-Label-profiles {
+    color: rgb(130, 175, 172);
+}
+
+#add-profile-config-file-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+}
+
+#select-profile-container {
+    width: 100%;
+    height: auto;
+    padding: 10px;
+    margin-top: 30px;
+}
