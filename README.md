@@ -1,8 +1,6 @@
-<p align="center">
-  <img src="https://purepng.com/public/uploads/medium/under-construction-wf0.png" width="100px" alt="Under Construction">
-</p>
-<h1 align="center">Stefan AI 3</h1>
+<img src="github/logo-circle.png" width="60px" alt="App Logo"> <img src="https://purepng.com/public/uploads/medium/under-construction-wf0.png" width="60px" alt="Under Construction"> 
 
+# Stefan AI 3 
 
 <h3 style="font-size: 1.7rem">The Most Advanced Automated Social Media Content Maker</h3>
 
@@ -44,3 +42,8 @@
 </p>
 
 <img src="github/jsonc.png" style="width: 100%" />
+<br><br>
+
+# Installation
+
+Guide coming soon
