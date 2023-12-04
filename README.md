@@ -22,7 +22,7 @@
 <h3 style="font-size: 1.7rem; margin-top: 20px">The brand new <b>Theme Editor</b></h3>
 
 <p style="margin-bottom: 0px">
-    The revised app, as seen above, has new, cutting-edge features, such as this easy to use <b>Theme Editor</b>
+    The revised app has new, cutting-edge features, such as this easy to use <b>Theme Editor</b>
 </p>
 <p>
     The theme editor provides the user with a very easy to use <b>interface,</b> which allows you to specify to the  system, how to process each video. 
