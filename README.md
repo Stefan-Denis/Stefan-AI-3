@@ -2,9 +2,14 @@
 
 # Stefan AI 3 
 
+
 ![Stefan AI Version](https://img.shields.io/badge/Stefan-AI-g) 
 ![Project Status](https://img.shields.io/badge/Version-3.0-blue) <br>
 ![Project Status](https://img.shields.io/badge/Project_Completion-Not_Finished-red)
+
+<p><b>Motto: </b>”Stefan AI 3 is incredible. Therefore, when a supposed Version 4 comes out, it will be the most successful software made.”</p>
+
+<p>Before starting, I would like to announce that version 3 will be a very long-term solution. Maybe 3.1, 3.2, 3.3 will exist, but 4.0 will not come soon, thats for sure. Just like Windows 10 or perhaps GTA 5, we will use the exisiting platform until it literally can't be used anymore and we will have to innovate once again.</p>
 
 <h3 style="font-size: 1.7rem">The Most Advanced Automated Social Media Content Maker</h3>
 
