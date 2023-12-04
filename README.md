@@ -86,8 +86,7 @@
 ![](https://img.shields.io/badge/Bootstrap-5-purple) <br>
 ![](https://img.shields.io/badge/Bootstrap-5-purple) 
 ![](https://img.shields.io/badge/PowerShell-7-darkblue) 
-![](https://img.shields.io/badge/PowerShell-7-darkblue) <br> 
-![](https://img.shields.io/badge/Python-3.11-blue) 
+![](https://img.shields.io/badge/Python-3.11-blue) <br> 
 ![](https://img.shields.io/badge/HTML-5-orange) 
 ![](https://img.shields.io/badge/CSS-3-blue) 
 ![](https://img.shields.io/badge/JS-ESNext-yellow) 
