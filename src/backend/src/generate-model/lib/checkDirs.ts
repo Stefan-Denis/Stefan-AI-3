@@ -1,20 +1,32 @@
 import { notExists } from './notExists.js'
-
-import MainConfig from '../@types/mainconfig.js'
 import path from 'path'
+
+/**
+ * __DIRNAME VARIABLE
+ */
+const currentModuleUrl = new URL(import.meta.url)
+const __dirname = path.dirname(currentModuleUrl.pathname + '../').slice(1)
 
 /**
  * Checks directories for existence.
  */
-export async function checkDirs(config: MainConfig) {
+export async function checkDirs() {
     let allFoldersExist = true
 
-    for (const folder in config.folders) {
-        const folderPath = config.folders[folder as keyof MainConfig['folders']]
-        if (notExists(path.join(folderPath))) {
-            console.error(`Folder "${folderPath}" does not exist!`)
-            allFoldersExist = false
-        }
+    // Check if the folders exist
+    if (notExists(path.join(__dirname, '../../../config'))) {
+        console.error('The config folder does not exist.')
+        allFoldersExist = false
+    }
+
+    if (notExists(path.join(__dirname, '../../../profiles'))) {
+        console.error('The profiles folder does not exist.')
+        allFoldersExist = false
+    }
+
+    if (notExists(path.join(__dirname, '../../../videos'))) {
+        console.error('The videos folder does not exist.')
+        allFoldersExist = false
     }
 
     if (!allFoldersExist) {

@@ -1,6 +1,11 @@
 import fs from 'fs-extra';
 import path from 'path';
 /**
+ * __DIRNAME VARIABLE
+ */
+const currentModuleUrl = new URL(import.meta.url);
+const __dirname = path.dirname(currentModuleUrl.pathname + '../').slice(1);
+/**
  * @param type can recieve `system` or `user` as a string.
  * @param currentCombination `(optional)` can recieve The current combination of videos.
  * @returns The Prompt
@@ -29,9 +34,9 @@ export default async function constructPrompt(type, currentCombination, app) {
             process.exit(1);
         }
         // Determine video Themes
-        const videoThemesPath = path.join(__dirname, '../', 'config', 'theme.json');
+        const videoThemesPath = path.join(__dirname, '../../../config', 'themes.json');
         const videoThemes = JSON.parse(fs.readFileSync(videoThemesPath, 'utf-8'));
-        const videoDirPath = path.join(__dirname, '../', 'videos');
+        const videoDirPath = path.join(__dirname, '../../../videos');
         const amountOfVideos = fs.readdirSync(videoDirPath).filter(file => path.extname(file) === '.mp4').length;
         /**
          * The video combination object
@@ -39,7 +44,7 @@ export default async function constructPrompt(type, currentCombination, app) {
         const videoCombination = {};
         for (let i = 1; i <= app.settings.easy.videosPerCombination; i++) {
             videoCombination[`video${i}`] = {
-                theme: "",
+                theme: '',
             };
         }
         for (const key in videoCombination) {
@@ -50,7 +55,7 @@ export default async function constructPrompt(type, currentCombination, app) {
                 }
             }
         }
-        let arrayOfThemes = [];
+        const arrayOfThemes = [];
         for (const key in videoCombination) {
             arrayOfThemes.push(videoCombination[key].theme);
         }

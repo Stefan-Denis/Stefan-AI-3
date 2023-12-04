@@ -2,6 +2,11 @@
     // Profile Name
     "profile": "motivational",
 
+    // Prompt Rules
+    "promptRules": [
+
+    ],
+
     // Processing Settings
     "settings": {
         "easy": {
