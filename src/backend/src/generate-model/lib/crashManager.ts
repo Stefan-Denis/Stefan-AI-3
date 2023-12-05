@@ -4,7 +4,6 @@
 type crashHandlerStatus = boolean
 
 import fs from 'fs-extra'
-import path from 'path'
 
 /**
  * Handles the crash state of the application by writing a boolean value to a file.

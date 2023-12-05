@@ -10,6 +10,8 @@ import OpenAI from 'openai'
 
 import fs from 'fs-extra'
 import { ChatCompletion } from 'openai/resources/index.mjs'
+import chalk from 'chalk'
+import breakLine from '../lib/breakLine.js'
 
 /**
  * __DIRNAME VARIABLE
@@ -17,13 +19,20 @@ import { ChatCompletion } from 'openai/resources/index.mjs'
 const currentModuleUrl = new URL(import.meta.url)
 const __dirname = path.dirname(currentModuleUrl.pathname + '../').slice(1)
 
-export default async function subtitles(test: TestInterface, currentCombination: subCombination, app: Profile) {
+export default async function subtitles(test: TestInterface, currentCombination: subCombination, app: Profile, subtitlesAttempts: number) {
     if ((test.enabled && test.unitToTest === 'subtitles') || !test.enabled) {
-        await main(currentCombination, app, test)
+        if (subtitlesAttempts <= 8) {
+            await main(currentCombination, app, test, subtitlesAttempts)
+        } else {
+            console.clear()
+            chalk.redBright('Subtitles failed to generate after 8 attempts. Please review your script.')
+            breakLine
+            process.exit(1)
+        }
     }
 }
 
-async function main(currentCombination: subCombination, app: Profile, test: TestInterface) {
+async function main(currentCombination: subCombination, app: Profile, test: TestInterface, subtitlesAttempts: number) {
     const prompts: Prompts = {
         system: (await constructPrompt('system', currentCombination, app,)).trimStart(),
         user: (await constructPrompt('user', currentCombination, app)).trimStart()
@@ -50,6 +59,13 @@ async function main(currentCombination: subCombination, app: Profile, test: Test
 
             videoScript = videoScript.choices[0].message.content as unknown as string
             fs.writeFileSync(path.join(__dirname, '../../../files/generate-model/permanent/prompt.json'), videoScript)
+
+            /**
+             * Set to 0 after a successful run
+             */
+
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            subtitlesAttempts = 0
         }
 
         catch (error) {

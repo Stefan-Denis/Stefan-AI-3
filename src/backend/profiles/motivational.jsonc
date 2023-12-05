@@ -18,7 +18,7 @@
             "shuffle": true,
 
             // How many times a video can be used
-            "maxVideoUsage": 2,
+            "maxVideoUsage": 3,
 
             // How many clips can appear max
             "videosPerCombination": 3,

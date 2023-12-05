@@ -1,5 +1,8 @@
 import fs from 'fs-extra';
 import path from 'path';
+import breakLine from '../lib/breakLine.js';
+import chalk from 'chalk';
+import crashHandler from '../lib/crashManager.js';
 /**
  * __DIRNAME VARIABLE
  */
@@ -10,59 +13,71 @@ const __dirname = path.dirname(currentModuleUrl.pathname + '../').slice(1);
  * (Based off of the user settings)
  * @param combinationsFilePath Path to the combinations file
 */
-export default async function generateCombinations(combinationsFilePath, appSettings) {
+export default async function generateCombinations(appSettings) {
     // Clear the directory where the output videos are saved
     fs.emptyDirSync(path.join(__dirname, '../../../../../output/generated-videos'));
     // Grab all the videos
     const videoPath = path.join(__dirname, '../../../videos');
     const files = fs.readdirSync(videoPath).filter(file => path.extname(file) === '.mp4');
     const permutations = await generatePermutations(appSettings, files);
-    try {
-        fs.writeFileSync(combinationsFilePath, JSON.stringify(permutations, null, 4));
-    }
-    catch (e) {
-        console.error(e);
-        process.exit(1);
-    }
+    /* try {
+        fs.writeFileSync(path.join(__dirname, '../../../config/combinations.json'), JSON.stringify(permutations, null, 4))
+    } catch (e) {
+        console.error(e)
+        process.exit(1)
+    } */
 }
+/**
+ * Generates all the possible combinations of the videos.
+ * @param appSettings The user settings
+ * @param files The videos
+ * @summary This is a very complex algorithm, it generates all the possible combinations of the videos with some rules.
+ *
+ */
 async function generatePermutations(app, files) {
-    const matrix = [];
+    // * Parameters
     const combinations = [];
     const maxUsage = app.settings.easy.maxVideoUsage;
     const videosPerCombination = app.settings.easy.videosPerCombination;
-    // Initialize the matrix
-    files.forEach(file => {
+    if (videosPerCombination > files.length) {
+        console.clear();
+        console.log(chalk.bgRedBright('ERROR:'));
+        console.log(chalk.redBright('The amount of videos is greater than the amount of videos per combination.'));
+        console.log(chalk.redBright('Please change the amount of videos per combination in the profile file.'));
+        crashHandler('not-running', path.join(__dirname, '../../../config/crash.json'));
+        process.exit(1);
+    }
+    // * Limit definitions
+    const matrix = [];
+    const filesToNotUse = [];
+    const usageCount = {};
+    // * Matrix generator
+    files.forEach((file) => {
         matrix.push([file, 0]);
     });
-    // Generate combinations
-    for (let i = 0; i < matrix.length; i++) {
-        const combination = [];
-        let j = i;
-        while (combination.length < videosPerCombination && j < matrix.length) {
-            // Check if video has not been used more than maxUsage times
-            if (matrix[j][1] < maxUsage) {
-                combination.push(matrix[j][0]);
-                matrix[j][1] = matrix[j][1] + 1;
-            }
-            j++;
-        }
-        if (combination.length === videosPerCombination) {
-            combinations.push(combination);
-        }
-    }
     /**
-     * False is added to keep track which combinations have been made.
-     * The first false array is the last one processed
+     * * Create absolutely all possible video combinations for future processing
      */
-    combinations.forEach(combination => {
-        combination.push(false);
-    });
-    // Shuffle the cominations if app.settings.easy.shuffle === true
-    if (app.settings.easy.shuffle) {
-        for (let i = combinations.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [combinations[i], combinations[j]] = [combinations[j], combinations[i]];
+    for (let i = 0; i < files.length; i++) {
+        const combination = [];
+        for (let j = 0; j < videosPerCombination; j++) {
+            const randomIndex = Math.floor(Math.random() * files.length);
+            const randomFile = files[randomIndex];
+            if (!combination.includes(randomFile)) {
+                combination.push(randomFile);
+            }
+            else {
+                j--;
+            }
         }
+        combinations.push(combination);
     }
+    breakLine();
+    console.log('Matrix:');
+    console.log(matrix);
+    breakLine();
+    console.log('Combinations:');
+    console.log(combinations);
+    breakLine();
     return combinations;
 }
