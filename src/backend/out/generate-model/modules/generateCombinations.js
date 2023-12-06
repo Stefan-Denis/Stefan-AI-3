@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import fs from 'fs-extra';
 import path from 'path';
 import breakLine from '../lib/breakLine.js';
@@ -20,12 +21,13 @@ export default async function generateCombinations(appSettings) {
     const videoPath = path.join(__dirname, '../../../videos');
     const files = fs.readdirSync(videoPath).filter(file => path.extname(file) === '.mp4');
     const permutations = await generatePermutations(appSettings, files);
-    /* try {
-        fs.writeFileSync(path.join(__dirname, '../../../config/combinations.json'), JSON.stringify(permutations, null, 4))
-    } catch (e) {
-        console.error(e)
-        process.exit(1)
-    } */
+    try {
+        fs.writeFileSync(path.join(__dirname, '../../../config/combinations.json'), JSON.stringify(permutations, null, 4));
+    }
+    catch (e) {
+        console.error(e);
+        process.exit(1);
+    }
 }
 /**
  * Generates all the possible combinations of the videos.
@@ -49,8 +51,6 @@ async function generatePermutations(app, files) {
     }
     // * Limit definitions
     const matrix = [];
-    const filesToNotUse = [];
-    const usageCount = {};
     // * Matrix generator
     files.forEach((file) => {
         matrix.push([file, 0]);
@@ -61,7 +61,7 @@ async function generatePermutations(app, files) {
     for (let i = 0; i < files.length; i++) {
         const combination = [];
         for (let j = 0; j < videosPerCombination; j++) {
-            const randomIndex = Math.floor(Math.random() * files.length);
+            const randomIndex = crypto.randomInt(files.length);
             const randomFile = files[randomIndex];
             if (!combination.includes(randomFile)) {
                 combination.push(randomFile);
@@ -72,6 +72,19 @@ async function generatePermutations(app, files) {
         }
         combinations.push(combination);
     }
+    for (const video in matrix) {
+        for (const combination of combinations) {
+            if (combination.includes(matrix[video][0]) && (matrix[video][1]) >= maxUsage) {
+                combinations.splice(combinations.indexOf(combination), 1);
+            }
+            else if (combination.includes(matrix[video][0])) {
+                matrix[video][1]++;
+            }
+        }
+    }
+    combinations.forEach((combination) => {
+        combination.push(false);
+    });
     breakLine();
     console.log('Matrix:');
     console.log(matrix);

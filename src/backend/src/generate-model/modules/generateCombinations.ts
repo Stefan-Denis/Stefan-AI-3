@@ -1,3 +1,4 @@
+import crypto from 'crypto'
 import fs from 'fs-extra'
 import path from 'path'
 
@@ -28,12 +29,12 @@ export default async function generateCombinations(appSettings: Profile) {
 
     const permutations: Combination = await generatePermutations(appSettings, files)
 
-    /* try {
+    try {
         fs.writeFileSync(path.join(__dirname, '../../../config/combinations.json'), JSON.stringify(permutations, null, 4))
     } catch (e) {
         console.error(e)
         process.exit(1)
-    } */
+    }
 }
 
 /**
@@ -46,7 +47,7 @@ export default async function generateCombinations(appSettings: Profile) {
 async function generatePermutations(app: Profile, files: Array<string>): Promise<Combination> {
 
     // * Parameters
-    const combinations: string[][] = []
+    const combinations: (string | boolean)[][] = []
     const maxUsage = app.settings.easy.maxVideoUsage
     const videosPerCombination = app.settings.easy.videosPerCombination
 
@@ -61,9 +62,7 @@ async function generatePermutations(app: Profile, files: Array<string>): Promise
     }
 
     // * Limit definitions
-    const matrix: Array<Array<string | number>> = []
-    const filesToNotUse: Array<string> = []
-    const usageCount: { [key: string]: number } = {}
+    const matrix: Array<[string, number]> = []
 
     // * Matrix generator
     files.forEach((file) => {
@@ -76,7 +75,7 @@ async function generatePermutations(app: Profile, files: Array<string>): Promise
     for (let i = 0; i < files.length; i++) {
         const combination: string[] = []
         for (let j = 0; j < videosPerCombination; j++) {
-            const randomIndex = Math.floor(Math.random() * files.length)
+            const randomIndex = crypto.randomInt(files.length)
             const randomFile = files[randomIndex]
             if (!combination.includes(randomFile)) {
                 combination.push(randomFile)
@@ -86,6 +85,20 @@ async function generatePermutations(app: Profile, files: Array<string>): Promise
         }
         combinations.push(combination)
     }
+
+    for (const video in matrix) {
+        for (const combination of combinations) {
+            if (combination.includes(matrix[video][0]) && (matrix[video][1]) >= maxUsage) {
+                combinations.splice(combinations.indexOf(combination), 1)
+            } else if (combination.includes(matrix[video][0])) {
+                matrix[video][1]++
+            }
+        }
+    }
+
+    combinations.forEach((combination) => {
+        combination.push(false)
+    })
 
     breakLine()
     console.log('Matrix:')

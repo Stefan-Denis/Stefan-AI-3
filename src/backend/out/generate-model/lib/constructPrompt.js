@@ -34,30 +34,19 @@ export default async function constructPrompt(type, currentCombination, app) {
             process.exit(1);
         }
         // Determine video Themes
-        const videoThemesPath = path.join(__dirname, '../../../config', 'themes.json');
+        const videoThemesPath = path.join(__dirname, '../../../config/themes.json');
         const videoThemes = JSON.parse(fs.readFileSync(videoThemesPath, 'utf-8'));
-        const videoDirPath = path.join(__dirname, '../../../videos');
-        const amountOfVideos = fs.readdirSync(videoDirPath).filter(file => path.extname(file) === '.mp4').length;
         /**
-         * The video combination object
+         * Find the themes of the videos
          */
-        const videoCombination = {};
-        for (let i = 1; i <= app.settings.easy.videosPerCombination; i++) {
-            videoCombination[`video${i}`] = {
-                theme: '',
-            };
-        }
-        for (const key in videoCombination) {
-            for (let x = 0; x < amountOfVideos; x++) {
-                const video = currentCombination[parseInt(key.replace('video', '')) - 1];
-                if (video === videoThemes[x][0]) {
-                    videoCombination[key].theme = videoThemes[x][1];
+        const arrayOfThemes = [];
+        for (const video of currentCombination) {
+            for (let i = 0; i < videoThemes.length; i++) {
+                const currentIndex = videoThemes[i];
+                if (currentIndex[0] === video) {
+                    arrayOfThemes.push(currentIndex[1]);
                 }
             }
-        }
-        const arrayOfThemes = [];
-        for (const key in videoCombination) {
-            arrayOfThemes.push(videoCombination[key].theme);
         }
         /**
          * Formatted user prompt for GPT

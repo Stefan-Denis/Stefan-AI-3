@@ -69,11 +69,10 @@ async function main(currentCombination: subCombination, app: Profile, test: Test
         }
 
         catch (error) {
-            console.error(error)
-
             // Restart the function
-            // await main(currentCombination, app, test)
-            // return
+            subtitlesAttempts++
+            await main(currentCombination, app, test, subtitlesAttempts)
+            return
         }
     }
 }

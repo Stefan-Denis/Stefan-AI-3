@@ -49,6 +49,7 @@ import { Combination } from './@types/Combination.js'
 // Core app modules
 import generateCombinations from './modules/generateCombinations.js'
 import subtitles from './modules/subtitles.js'
+import SSMLParser from './modules/SSMLParser.js'
 
 // DotENV
 import { config } from 'dotenv'
@@ -133,6 +134,7 @@ namespace Main {
 
         /**
          * ? Generate Combinations Function
+         * ! TEST LABEL = "" (keep empty)
          * * Generate the combinations
          * * Generates only if the app did not crash
          * * if it did, it will skip generating combinations since it already has them
@@ -184,6 +186,7 @@ namespace Main {
 
             /**
              * ? Subtitles Function 
+             * ! TEST LABEL = "subtitles"
              * * Generate the subtitles for the current combination
              * * Uses GPT API to generate the subtitles
              */
@@ -192,7 +195,15 @@ namespace Main {
             await subtitles(test, currentCombination, profile, subtitlesAttempts)
             subtitlesSpinner.succeed('Subtitles generated successfully!')
 
-
+            /**
+             * ? SSML Parser
+             * ! TEST LABEL = "SSMLParser"
+             * * Parses the text from the AI to SSML
+             * * Used for Google TTS API
+             */
+            const SSMLSpinner = ora('Parsing SSML').start()
+            await SSMLParser(test)
+            SSMLSpinner.succeed('SSML parsed successfully!')
         }
 
         /**

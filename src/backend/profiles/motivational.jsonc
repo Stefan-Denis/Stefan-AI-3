@@ -18,10 +18,10 @@
             "shuffle": true,
 
             // How many times a video can be used
-            "maxVideoUsage": 3,
+            "maxVideoUsage": 2,
 
             // How many clips can appear max
-            "videosPerCombination": 3,
+            "videosPerCombination": 2,
 
             // App can auto-determine the amount of videos to use per clip for that combination
             "dynamicVideoEditing": true,

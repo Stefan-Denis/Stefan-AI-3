@@ -53,10 +53,10 @@ async function main(currentCombination, app, test, subtitlesAttempts) {
             subtitlesAttempts = 0;
         }
         catch (error) {
-            console.error(error);
             // Restart the function
-            // await main(currentCombination, app, test)
-            // return
+            subtitlesAttempts++;
+            await main(currentCombination, app, test, subtitlesAttempts);
+            return;
         }
     }
 }
