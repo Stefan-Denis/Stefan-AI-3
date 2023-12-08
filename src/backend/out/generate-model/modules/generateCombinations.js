@@ -1,8 +1,6 @@
 import crypto from 'crypto';
 import fs from 'fs-extra';
 import path from 'path';
-import breakLine from '../lib/breakLine.js';
-import chalk from 'chalk';
 import crashHandler from '../lib/crashManager.js';
 /**
  * __DIRNAME VARIABLE
@@ -43,9 +41,6 @@ async function generatePermutations(app, files) {
     const videosPerCombination = app.settings.easy.videosPerCombination;
     if (videosPerCombination > files.length) {
         console.clear();
-        console.log(chalk.bgRedBright('ERROR:'));
-        console.log(chalk.redBright('The amount of videos is greater than the amount of videos per combination.'));
-        console.log(chalk.redBright('Please change the amount of videos per combination in the profile file.'));
         crashHandler('not-running', path.join(__dirname, '../../../config/crash.json'));
         process.exit(1);
     }
@@ -85,12 +80,5 @@ async function generatePermutations(app, files) {
     combinations.forEach((combination) => {
         combination.push(false);
     });
-    breakLine();
-    console.log('Matrix:');
-    console.log(matrix);
-    breakLine();
-    console.log('Combinations:');
-    console.log(combinations);
-    breakLine();
     return combinations;
 }

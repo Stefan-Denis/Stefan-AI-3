@@ -1,0 +1,31 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "tsc: watch (whole server-side)",
+            "type": "shell",
+            "command": "tsc --watch",
+            "options": {
+                "cwd": "${workspaceFolder}/src/backend"
+            },
+            "isBackground": true,
+            "problemMatcher": [
+                "$tsc-watch"
+            ],
+            "group": {
+                "kind": "build",
+            }
+        },
+        {
+            "label": "start Generate-3 model test",
+            "type": "shell",
+            "command": "powershell -Command ./g3.ps1",
+            "options": {
+                "cwd": "${workspaceFolder}/src/backend/scripts"
+            },
+            "isBackground": true,
+            "problemMatcher": [],
+            "group": "build"
+        },
+    ]
+}

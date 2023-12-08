@@ -37,7 +37,7 @@ export default async function constructPrompt(type, currentCombination, app) {
         const videoThemesPath = path.join(__dirname, '../../../config/themes.json');
         const videoThemes = JSON.parse(fs.readFileSync(videoThemesPath, 'utf-8'));
         /**
-         * Find the themes of the videos
+         * * Find the themes of the videos
          */
         const arrayOfThemes = [];
         for (const video of currentCombination) {

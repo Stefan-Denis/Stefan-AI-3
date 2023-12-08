@@ -53,10 +53,6 @@ async function generatePermutations(app: Profile, files: Array<string>): Promise
 
     if (videosPerCombination > files.length) {
         console.clear()
-        console.log(chalk.bgRedBright('ERROR:'))
-        console.log(chalk.redBright('The amount of videos is greater than the amount of videos per combination.'))
-        console.log(chalk.redBright('Please change the amount of videos per combination in the profile file.'))
-
         crashHandler('not-running', path.join(__dirname, '../../../config/crash.json'))
         process.exit(1)
     }
@@ -99,14 +95,6 @@ async function generatePermutations(app: Profile, files: Array<string>): Promise
     combinations.forEach((combination) => {
         combination.push(false)
     })
-
-    breakLine()
-    console.log('Matrix:')
-    console.log(matrix)
-    breakLine()
-    console.log('Combinations:')
-    console.log(combinations)
-    breakLine()
 
     return combinations
 }

@@ -40,6 +40,10 @@ import { Wait } from './lib/wait.js'
 // Default
 import crashHandler from './lib/crashManager.js'
 import breakLine from './lib/breakLine.js'
+import isValidProfile from './lib/validateProfile.js'
+import trimVideos from './modules/trimVideos.js'
+import concatVideos from './modules/concatVideos.js'
+import parseTimings from './modules/parseTimings.js'
 
 // Interfaces
 import Profile from './@types/Profile.d.js'
@@ -50,10 +54,10 @@ import { Combination } from './@types/Combination.js'
 import generateCombinations from './modules/generateCombinations.js'
 import subtitles from './modules/subtitles.js'
 import SSMLParser from './modules/SSMLParser.js'
+import testTTSLength from './modules/testTTSLength.js'
 
 // DotENV
 import { config } from 'dotenv'
-
 
 namespace Main {
     /**
@@ -79,7 +83,15 @@ namespace Main {
         try {
             const profileFile = fs.readdirSync('../../profiles')[0]
             const filePath = path.join(__dirname, '../../profiles', profileFile)
-            return commentJson.parse(fs.readFileSync(filePath, 'utf-8')) as unknown as Profile
+            const uncheckedProfile = commentJson.parse(fs.readFileSync(filePath, 'utf-8')) as unknown as Profile
+
+            if (uncheckedProfile === null) {
+                throw new Error('Profile data is null')
+            }
+
+            const isValid = isValidProfile(uncheckedProfile)
+
+            return isValid ? uncheckedProfile : (() => { throw new Error('Invalid Profile') })()
         } catch (e) {
             console.error(e)
             process.exit(1)
@@ -91,6 +103,10 @@ namespace Main {
      * * Entry point of the app
      */
     export async function main() {
+        /**
+         * * Config Folder Location
+         */
+        const configFolder = path.join(__dirname, '../../config')
 
         /**
          * ? Crash Handler Function
@@ -100,7 +116,7 @@ namespace Main {
          * * This is useful when the app crashes and you want to continue from the last combination
          * * App will then be set to be running
          */
-        const crashFilePath = path.join(__dirname, '../../config', 'crash.json')
+        const crashFilePath = path.join(configFolder, 'crash.json')
         const crashStatus: boolean = await checkCrashFile(crashFilePath)
         await crashHandler('running', crashFilePath)
 
@@ -108,7 +124,7 @@ namespace Main {
          * * Create the test variable
          * * created here to be used in early functions of the app
          */
-        const test: TestInterface = JSON.parse(fs.readFileSync(path.join(__dirname, '../../config', 'test.json'), 'utf-8'))
+        const test: TestInterface = JSON.parse(fs.readFileSync(path.join(configFolder, 'test.json'), 'utf-8'))
 
         /**
          * ? Start Message Function
@@ -138,7 +154,7 @@ namespace Main {
          * * Generate the combinations
          * * Generates only if the app did not crash
          * * if it did, it will skip generating combinations since it already has them
-         * TODO: add a check to see if there have been added other files, despite the app crashing
+         * TODO: Add a check to see if there have been added other files, despite the app crashing
          */
         if (!crashStatus) {
             const spinner = ora('Generating Combinations').start()
@@ -153,7 +169,7 @@ namespace Main {
 
 
         // * Read the combinations file
-        const combinationFilePath = path.join(__dirname, '../../config', 'combinations.json')
+        const combinationFilePath = path.join(configFolder, 'combinations.json')
         const combinations: Combination = JSON.parse(fs.readFileSync(combinationFilePath, 'utf-8'))
 
         /**
@@ -162,6 +178,12 @@ namespace Main {
          * * Loops over videos inside the combination file
          */
         for (let x = 0; x < (test.runOnce ? 1 : combinations.length); x++) {
+
+            /**
+             * * Voice Variable
+             * * for Google TTS API
+             */
+            const voice = 'en-US-Neural2-J'
 
             /**
              * * Logs the current combination to the console
@@ -204,7 +226,72 @@ namespace Main {
             const SSMLSpinner = ora('Parsing SSML').start()
             await SSMLParser(test)
             SSMLSpinner.succeed('SSML parsed successfully!')
+
+            /**
+             * ? Test TTS length
+             * ? Create TTS (side effect of the function)
+             * ! TEST LABEL = "testTTSLength"
+             * * Also generates TTS file for video
+             */
+            const testTTSLengthSpinner = ora('Checking Video Length').start()
+            const length = await testTTSLength(test, voice)
+
+            if (length > profile.settings.easy.length.max) {
+                testTTSLengthSpinner.fail('Video script is too long, restarting!')
+
+                /**
+                 * * Attempt to delete the mp3 file
+                 * * Only executes if the length exceeds the maximum
+                 */
+                try {
+                    const tempAudioFilePath = path.join(__dirname, '../../files/generate-model/temporary/subtitles.mp3')
+                    fs.unlinkSync(tempAudioFilePath)
+                } catch (e) {
+                    breakLine()
+                    breakLine()
+                    console.error(e)
+                    breakLine()
+                }
+
+                x--
+                continue
+            } else {
+                testTTSLengthSpinner.succeed('Video script length is good!')
+            }
+
+            /**
+             * ? Trim Videos
+             * ! TEST LABEL = "trimVideos"
+             * * Trims the videos to the desired length.
+             */
+            const trimVideosSpinner = ora('Trimming Videos').start()
+            await trimVideos(test, voice, currentCombination, profile)
+            trimVideosSpinner.succeed('Videos trimmed successfully!')
+
+            /**
+             * ? Conact Videos
+             * ! TEST LABEL = "concatVideos"
+             * * Concatenates the videos together
+             */
+            const concatVideosSpinner = ora('Concatenating Videos').start()
+            await concatVideos(test, profile)
+            concatVideosSpinner.succeed('Videos concatenated successfully!')
+
+            /**
+             * ? Parse Timings
+             * ! TEST LABEL = "parseTimings"
+             * * Parses the timings for the subtitles
+             * * Uses Montreal Forced Aligner to generate the timings
+             */
+            const parseTimingsSpinner = ora('Parsing Timings').start()
+            const timings = await parseTimings(test, profile) as Array<object>
+            parseTimingsSpinner.succeed('Timings parsed successfully!')
+
+            breakLine()
+            console.log(timings)
         }
+
+
 
         /**
          * * Close App

@@ -3,7 +3,6 @@ import Profile from '../@types/Profile.js'
 
 import fs from 'fs-extra'
 import path from 'path'
-import breakLine from './breakLine.js'
 
 /**
  * __DIRNAME VARIABLE
@@ -48,7 +47,7 @@ export default async function constructPrompt(type: string, currentCombination: 
         const videoThemes = JSON.parse(fs.readFileSync(videoThemesPath, 'utf-8'))
 
         /**
-         * Find the themes of the videos
+         * * Find the themes of the videos
          */
         const arrayOfThemes: Array<string> = []
 
