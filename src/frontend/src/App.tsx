@@ -16,9 +16,11 @@ export default function App() {
                 <nav>
                     <h1>Stefan AI</h1>
                     <Link to='/'><button type="button" className="nav-button" >Home</button></Link>
-                    <Link to='/video'><button type="button" className="nav-button" >Video Creator</button></Link>
+                    <Link to='/video'><button type="button" className="nav-button" >Generator 3 System</button></Link>
                     <Link to='/repurpose'><button type="button" className="nav-button" >Repurpose Clips</button></Link>
-                    <Link to='/images'><button type="button" className="nav-button" >Image Maker</button></Link>
+                    <Link to='/'><button type="button" className="nav-button" >75% Auto Edit</button></Link>
+                    <Link to='/'><button type="button" className="nav-button" >Reddit Stories</button></Link>
+                    <Link to='/'><button type="button" className="nav-button" >Funny Moments</button></Link>
                 </nav>
                 <main>
                     <div>

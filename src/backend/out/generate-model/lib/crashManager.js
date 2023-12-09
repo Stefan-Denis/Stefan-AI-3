@@ -1,7 +1,12 @@
+/**
+ * * Node.JS Imports
+ */
 import fs from 'fs-extra';
 /**
- * Handles the crash state of the application by writing a boolean value to a file.
- * @param state The state of the application, either 'running' or 'not-running'.
+ * ? CrashHandler Function
+ * * Handles the crash state of the application by writing a boolean value to a file.
+ * @param state
+ * * Can recieve `running` or `not-running` as a string.
  */
 export default async function crashHandler(state, crashFile) {
     if (state === 'running') {
@@ -18,6 +23,10 @@ export default async function crashHandler(state, crashFile) {
         throw new Error(`Invalid state "${state}"`);
     }
 }
+/**
+ * * Checks the crash file to see if the application has crashed.
+ * @returns The status of the crash handler.
+ */
 export async function checkCrashFile(crashFile) {
     const crashFileData = JSON.parse(fs.readFileSync(crashFile, 'utf-8'));
     return crashFileData.crash;

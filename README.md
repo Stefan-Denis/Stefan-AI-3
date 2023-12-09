@@ -75,7 +75,6 @@
 | -------- | -------- | -------- | -------- |
 | Output video, <br> editing capabilities  | 1.5/10  | 8/10  | 9/10  |
 | AI Script Generation | Poor | Very Good (User-Settings play a big role)  | Very Good (User-Settings play a big role) |
-| Speed  rating | Very Fast | Tolerable | Tolerable |
 | App Size | Very Low <br> ~400mb | Big <br> ~10GB - 20GB | Bigger <br> ~15GB - 25GB |
 | Speed  rating | Fast (AI Dependant) | Slow | Tolerable |
 | Overall Capabilities, what it can output | Always was 15 seconds, very poor editing, 720p, Basic Subtitles, Motivational Content only, added music automatically | Outputs a wide range of content depending on how you configured the profile, 1080p Standard and only choice, 60fps, nice transitions, asthetic subtitles, leaves user to decide if they want to add music through social-media platform, videos did not have a fixed length, although, the app worked best whilst producing videos in between 9s to 15s. | Video Generation System remade from Stefan AI 2 but more immune to errors, State of the Art image generator that takes input images to create an output slideshow for TikTok. Could also repurpose Videos by adding subtitles, it uses your existing profile to process it. 1080p standard and only choice for all video types and *high-resolution images outputted.  |
@@ -94,3 +93,15 @@
 ![](https://img.shields.io/badge/HTML-5-orange) <br> 
 ![](https://img.shields.io/badge/CSS-3-blue) 
 ![](https://img.shields.io/badge/JS-ESNext-yellow) 
+
+<hr>
+<h3 style="font-size: 1.7rem; margin-top: 20px">New Approach To Complex Problems</h3>
+In Stefan AI 3, it will feature specialised tools to make certain categories of videos. Here are the systems in depth
+
+<br>
+
+|         | Generate 3 (G3) | Repurpose 1 (R1) | AE75-1 (Auto-Edit 75% Gen 1) | RS1 (Reddit Stories 1) | FM1 (Funny Moments 1) |
+| -------- | -------- | -------- | -------- | ------ | ------ |
+| Finished | Yes | No | No | In Progress | No |
+| Rating | 8/10 | N\A | N\A | N\A | N\A |
+|  |  |  |  |  |  |

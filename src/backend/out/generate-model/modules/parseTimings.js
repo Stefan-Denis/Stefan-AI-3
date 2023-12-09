@@ -1,7 +1,7 @@
 import { spawnSync } from 'child_process';
+import readline from 'readline';
 import fs from 'fs-extra';
 import path from 'path';
-import readline from 'readline';
 export default async function parseTimings(test, profile) {
     if ((test.enabled && test.unitToTest === 'parseTimings') || !test.enabled) {
         /**
@@ -31,9 +31,10 @@ export default async function parseTimings(test, profile) {
         const audioPath = path.join(__dirname, '../../../files/generate-model/temporary/subtitles.mp3');
         const wavAudioPath = path.join(corpusDirectory, 'audio.wav');
         const ffmpeg = spawnSync('ffmpeg', ['-i', audioPath, wavAudioPath]);
-        // TODO Add error handling
         if (ffmpeg.error) {
             console.log('An error occurred: ' + ffmpeg.error.message);
+            await parseTimings(test, profile);
+            return;
         }
         // * Prepare Transcript File
         const videoScriptJSON = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../files/generate-model/permanent/prompt.json'), 'utf-8'));
@@ -52,7 +53,7 @@ export default async function parseTimings(test, profile) {
             return;
         }
         // * Delete the corpus directory
-        // fs.rmdirSync(corpusDirectory, { recursive: true })
+        fs.rmdirSync(corpusDirectory, { recursive: true });
         return parseTextGrid(path.join(outputDir, 'audio.TextGrid'));
     }
 }

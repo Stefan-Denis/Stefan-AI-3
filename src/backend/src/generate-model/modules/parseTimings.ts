@@ -3,10 +3,9 @@ import TestInterface from '../@types/TestInterface.js'
 import Profile from '../@types/Profile.js'
 import { spawnSync } from 'child_process'
 import Video from '../@types/Video.js'
+import readline from 'readline'
 import fs from 'fs-extra'
 import path from 'path'
-import Timing from '../@types/timing.js'
-import readline from 'readline'
 
 export default async function parseTimings(test: TestInterface, profile: Profile) {
     if ((test.enabled && test.unitToTest === 'parseTimings') || !test.enabled) {
@@ -47,9 +46,10 @@ export default async function parseTimings(test: TestInterface, profile: Profile
 
         const ffmpeg = spawnSync('ffmpeg', ['-i', audioPath, wavAudioPath])
 
-        // TODO Add error handling
         if (ffmpeg.error) {
             console.log('An error occurred: ' + ffmpeg.error.message)
+            await parseTimings(test, profile)
+            return
         }
 
         // * Prepare Transcript File
@@ -73,7 +73,7 @@ export default async function parseTimings(test: TestInterface, profile: Profile
         }
 
         // * Delete the corpus directory
-        // fs.rmdirSync(corpusDirectory, { recursive: true })
+        fs.rmdirSync(corpusDirectory, { recursive: true })
 
         return parseTextGrid(path.join(outputDir, 'audio.TextGrid')) as Promise<Array<object>>
     }

@@ -1,1 +1,14 @@
-{"video1": {"isUsed": true, "message": "There is nothing bad in searching for wealth,"}, "video2": {"isUsed": true, "message": "only if you are doing it by honest means."}}
+{
+    "video1": {
+        "isUsed": true,
+        "message": "Top 2 reasons why you will always have to work hard!"
+    },
+    "video2": {
+        "isUsed": true,
+        "message": "0"
+    },
+    "video3": {
+        "isUsed": true,
+        "message": "Top 2 reasons why you will always have to work hard!"
+    }
+}

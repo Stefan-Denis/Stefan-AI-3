@@ -2,9 +2,51 @@
     // Profile Name
     "profileName": "motivational",
 
-    // Prompt Rules
+    // Prompt to give to AI
     "promptRules": [
-        // insert rules here
+        "Heads UP: The number of clips you have is equal to the amount of video themes you have been given. ",
+
+        /**
+         * * Hook rules
+         */
+        "Follow this rule or the whole video is wasted: You must use a hook at the start.",
+        "What defines a good hook? A good hook is one of the following:",
+        "A question that makes the viewer curious",
+        "A statement that makes the viewer curious",
+        "A statement that makes the viewer feel like they are missing out on something",
+        "Here are some good hooks to use, but also create your own if you feel like it: ",
+        "1. Top # (or put reasons instead of number) ... ", 
+        "2. Here's a simple hack to ...",
+        "3. I was today years old when I found out that (then write script in the next clips)",
+        " ",
+        "Here is how to apply the hooks I just gave you. If you see a hastag, that usually indicates a number you need to fill out. If you see ”...”, you need to fill out the rest of the sentence. If you see ”(then write script in the next clips)”, you need to write the script in the next clips, since they are supposed to take up 1 whole clip of the video.",
+        "The script you are trained to make has multiple objects, those objects represents clips, the whole object with sub-objects represents the whole video",
+        "You tend to make errors when applying hooks, so I'll help you fix them. When I put ”...”, that is a placeholder for you to fill out. If you see ”(then write script in the next clips)”, you need to write the script in the next clips, since they are supposed to take up 1 whole clip of the video.",
+        "You must use a hook. If you don't, the whole video is wasted.",
+        "IMPORTANT RULE: After a hook is used, you must continue your video about that theme you set first.",
+        "When using the ”Top #” hook, replace that number with the amount of videos left. If I gave you 3 videos, you would write ”Top 2, since 1 clip is wasted saying the hook”, so basically do -1 from the amount of videos I gave you themes for, THEN AFTER SAYING ”Top #”, you must say for what the top # is for. For example, if I gave you 3 videos, you would say ”Top 2 reasons why you should ...”, and then you would continue the video about that theme you set first. Replace the ... with the action",
+        " ",
+
+        /**
+        * * What to talk about and what to avoid
+        */
+        "Give more 'harsh advice'",
+        "Avoid using the word 'embrace' in any form",
+        "Do not mention anything about darkness since it doesn't fit the video theme",
+        "Don't go around giving facts",
+        "Make your content have a red pill theme",
+        "Give sigma male tips",
+        "Do not give washed up subtitles, such as 'Reach the stars' or 'Be the best version of yourself'",
+        "Encourage hard work, going to the gym, eating healthy, etc. Make it sound like something that is neccesary for being a succesful man. Use other examples as well.",
+        "Do not fear being harsh with the viewer. We need to instigate a fire inside them",
+
+        /**
+         * * Formatting Rules
+         */ 
+        "Make sure to add a . after each sentence, so the TTS model doesnt read it all at once",
+        "Make sure to use only JSON-safe characters and these will appear as subtitles.",
+        "English Words Only",
+        "Do not use any special characters, such as emojis, etc. and no special formatting, simple text, commas, periods, etc. are allowed."
     ],
 
     // Processing Settings
@@ -17,20 +59,23 @@
             // Shuffle order of combinations (so content does not look reused)
             "shuffle": true,
 
-            // How many times a video can be used
-            "maxVideoUsage": 2,
+            // How many times a video can be used in the whole process
+            // This should not be bigger than the amount of videos the app has been given
+            "maxVideoUsage": 3,
 
-            // How many clips can appear max
-            "videosPerCombination": 2,
+            // How many clips can appear max in an array of videos
+            // Maximum of 6 clips.
+            "videosPerCombination": 3,
 
             // App can auto-determine the amount of videos to use per clip for that combination
+            // This should not be bigger than the amount of videos the app has been given
             "dynamicVideoSelection": true,
 
             // Length settings in seconds
             "length": {
-                "min": 9,
-                "max": 18,
-                "preferred": 15
+                "min": 5,
+                "max": 13,
+                "preferred": 10
             }
         },
 
@@ -43,11 +88,12 @@
              ** Specify if the app should have a desired output
              ** leave empty for automatic output 
              */
-            "desiredOutput": "",
+            "desiredOutput": "The app shall output an entertaining motivational video, with perfect subtitles",
 
             // Set transition settings
             "transitions": {
                 // Use custom, modern transitions
+                // Auto generated by app
                 "enabled": true
             },
 
@@ -58,12 +104,14 @@
             "generalTheme": "",
 
             // VIDEO SETTINGS
+            // Not advised to change these settings, unless needed
             "upscale": true, // Use the unsharp filter
             "colorful": true, // Make the colors better
             "contrast": 1.3,
 
+            // Amount of cores that the CPU has
             /**
-             * Set the amount of CPU cores your CPU has
+             * Setting more than you have may cause slowdowns
              */
             "cpuCores": 4
         }

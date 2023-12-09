@@ -1,5 +1,6 @@
 /**
- * * Represents the Profile Configuration File.
+ * ? Profile Interface
+ * * Represents the Profile Configuration File Structure.
  */
 export default interface Profile {
     /**

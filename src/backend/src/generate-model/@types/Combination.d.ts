@@ -1,9 +1,11 @@
 /**
- * Represents the combinations for the video.
+ * ? Combination Type
+ * * Represents the whole combinations for the video.
  */
 export type Combination = Array<subCombination>
 
 /**
- * Represents an array that is inside the "combinations" type
+ * ? SubCombination Type
+ * * Represents an array that is inside the: @type Combination
  */
 export type subCombination = Array<string | boolean>

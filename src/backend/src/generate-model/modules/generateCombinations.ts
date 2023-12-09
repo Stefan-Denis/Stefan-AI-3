@@ -1,32 +1,43 @@
+/**
+ * * Node.JS Imports
+ */
 import crypto from 'crypto'
 import fs from 'fs-extra'
+import chalk from 'chalk'
 import path from 'path'
 
-import Profile from '../@types/Profile.d.js'
+/**
+ * * User Imports
+ */
 import { Combination } from '../@types/Combination.js'
-import breakLine from '../lib/breakLine.js'
-import chalk from 'chalk'
 import crashHandler from '../lib/crashManager.js'
+import Profile from '../@types/Profile.d.js'
 
 /**
- * __DIRNAME VARIABLE
+ * ? __DIRNAME VARIABLE
  */
 const currentModuleUrl = new URL(import.meta.url)
 const __dirname = path.dirname(currentModuleUrl.pathname + '../').slice(1)
 
 /**
- * Advanced, Complex algorithm to generate all the possible combinations of the videos.
- * (Based off of the user settings)
- * @param combinationsFilePath Path to the combinations file
+ * * Advanced, Complex algorithm to generate all the possible combinations of the videos.
+ * * (Based off of the user settings)
+ * @param combinationsFilePath
 */
 export default async function generateCombinations(appSettings: Profile) {
-    // Clear the directory where the output videos are saved
+    /**
+     * * Clear the directory where the output videos are saved
+     */
     fs.emptyDirSync(path.join(__dirname, '../../../../../output/generated-videos'))
 
-    // Grab all the videos
+    // * Grab all the videos
     const videoPath = path.join(__dirname, '../../../videos')
     const files: Array<string> = fs.readdirSync(videoPath).filter(file => path.extname(file) === '.mp4')
 
+    /**
+     * * Holds all the permutations
+     * * Generate all the possible combinations of the videos
+     */
     const permutations: Combination = await generatePermutations(appSettings, files)
 
     try {
@@ -38,21 +49,30 @@ export default async function generateCombinations(appSettings: Profile) {
 }
 
 /**
- * Generates all the possible combinations of the videos.
+ * * Generates all the possible combinations of the videos.
  * @param appSettings The user settings
  * @param files The videos
  * @summary This is a very complex algorithm, it generates all the possible combinations of the videos with some rules.
  * 
  */
-async function generatePermutations(app: Profile, files: Array<string>): Promise<Combination> {
+export async function generatePermutations(app: Profile, files: Array<string>): Promise<Combination> {
 
     // * Parameters
     const combinations: (string | boolean)[][] = []
     const maxUsage = app.settings.easy.maxVideoUsage
     const videosPerCombination = app.settings.easy.videosPerCombination
 
+    /**
+     * * If the number of videos per combination is greater than the number of videos,
+     * * the app will crash, because there is no way to generate all the possible combinations.
+     * * (This is a mathematical fact)
+     * * User will be asjed to change the settings.
+     */
     if (videosPerCombination > files.length) {
         console.clear()
+        console.log(chalk.bgRedBright('ERROR'))
+        console.log(chalk.redBright('The number of videos per combination is greater than the number of videos.'))
+        console.log(chalk.redBright('Please review your Profile File and reupload it, through the App.'))
         crashHandler('not-running', path.join(__dirname, '../../../config/crash.json'))
         process.exit(1)
     }
@@ -82,6 +102,9 @@ async function generatePermutations(app: Profile, files: Array<string>): Promise
         combinations.push(combination)
     }
 
+    /**
+     * * Remove all the combinations that include the same video more than once
+     */
     for (const video in matrix) {
         for (const combination of combinations) {
             if (combination.includes(matrix[video][0]) && (matrix[video][1]) >= maxUsage) {
@@ -92,6 +115,11 @@ async function generatePermutations(app: Profile, files: Array<string>): Promise
         }
     }
 
+    /**
+     * * Add a boolean to each combination to know if it has been used or not
+     * * (false = not used, true = used)
+     * * In this case, all are set to false since app didn't run yet.
+     */
     combinations.forEach((combination) => {
         combination.push(false)
     })

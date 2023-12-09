@@ -1,25 +1,29 @@
+/**
+ * * Node.JS imports
+ */
 import fs from 'fs-extra';
 import path from 'path';
 /**
- * __DIRNAME VARIABLE
+ * ? __DIRNAME VARIABLE
  */
 const currentModuleUrl = new URL(import.meta.url);
 const __dirname = path.dirname(currentModuleUrl.pathname + '../').slice(1);
 /**
+ * ? Construct Prompt Function
  * @param type can recieve `system` or `user` as a string.
  * @param currentCombination `(optional)` can recieve The current combination of videos.
  * @returns The Prompt
  */
 export default async function constructPrompt(type, currentCombination, app) {
     /**
-     * Formatted user prompt for either
-     * `user` or `system`
+     * * Formatted user prompt for either
+     * * `user` or `system`
      * @param `user prompt` requires the current combination of videos
      */
     let prompt = '';
     if (type === 'system') {
         /**
-         * Formatted prompt for the system
+         * * Formatted prompt for the system
          */
         prompt =
             `You are an AI assistant for Stefan-AI, an app that uses a powerful settings file and inputted videos to create short form content for TikTok and YouTube Shorts.
@@ -29,17 +33,27 @@ export default async function constructPrompt(type, currentCombination, app) {
             Remember, the number of objects in the output should match the number of videos provided in the prompt, also, if its convenient, you can make it so that the message splits on multiple videos, just add a property to the JSON named "extends" and set it to true if thats the case.`;
     }
     else if (type === 'user') {
+        /**
+         * * Check if the current combination is undefined.
+         * * If it is, the application shuts off.
+         * * This is a critical error, but should never occour.
+         */
         if (!currentCombination) {
             console.error('currentCombination is undefined for user prompt');
             process.exit(1);
         }
-        // Determine video Themes
+        // * Determine video Themes
         const videoThemesPath = path.join(__dirname, '../../../config/themes.json');
         const videoThemes = JSON.parse(fs.readFileSync(videoThemesPath, 'utf-8'));
         /**
-         * * Find the themes of the videos
+         * * Themes from the videos
+         * * Used to generate the prompt
          */
         const arrayOfThemes = [];
+        /**
+         * * Loop through the current combination
+         * * and find the themes for each video.
+         */
         for (const video of currentCombination) {
             for (let i = 0; i < videoThemes.length; i++) {
                 const currentIndex = videoThemes[i];
@@ -49,7 +63,7 @@ export default async function constructPrompt(type, currentCombination, app) {
             }
         }
         /**
-         * Formatted user prompt for GPT
+         * * Formatted user prompt for GPT
          */
         prompt =
             `I will need you to make a video script for the following videos:
@@ -71,6 +85,8 @@ export default async function constructPrompt(type, currentCombination, app) {
 
             Here are the rules you need to follow:
             ${app.promptRules.map((rule, index) => `${index + 1}. ${rule}`).join('\n')}
+
+            Final Reminder:
             Please process the videos and generate the subtitles for them in fluent english only.
             `;
     }

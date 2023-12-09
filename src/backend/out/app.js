@@ -1,8 +1,10 @@
 /**
  * __DIRNAME VARIABLE
  */
-const currentModuleUrl = new URL(import.meta.url);
-export const __dirname = path.dirname(currentModuleUrl.pathname + '../').slice(1);
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 /*
  ╭──────────────────────────────────────────────────────────────╮
  │          File Overview and Version                           │
@@ -177,9 +179,22 @@ export var App;
             });
             next();
         }
+        app.get('/g3/info', async (req, res) => {
+            const data = {
+                currentScript: '',
+            };
+            /**
+             * * Get the current profile
+             */
+            data.currentScript = fs.readdirSync(path.join(__dirname, '../profiles'))[0];
+            /**
+             * * Get the total potential combinations
+             */
+            res.json(data).status(200);
+        });
         app.get('/startgeneration', (req, res) => {
             function callScript() {
-                const scriptPath = path.join(__dirname, './generate-model/scripts/init.ps1');
+                const scriptPath = path.join(__dirname, '../scripts/init.ps1');
                 const result = spawnSync('powershell.exe', [scriptPath], { cwd: path.dirname(scriptPath) });
                 if (result.error) {
                     console.error('Error:', result.error);

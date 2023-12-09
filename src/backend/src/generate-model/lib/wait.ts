@@ -1,8 +1,12 @@
 /**
- * A collection of functions that pause execution for a specified amount of time.
+ * ? Wait Namespace
+ * ? |
+ * ? |-> seconds
+ * ? |-> minutes
+ * ? |-> milliseconds
+ * 
+ * * A collection of functions that pauses execution for a specified amount of time.
  * @namespace Wait
- * @since 3.0
- * @version 1.0
  */
 export namespace Wait {
     /**

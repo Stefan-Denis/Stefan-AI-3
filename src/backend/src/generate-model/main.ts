@@ -25,6 +25,7 @@
 
 // Node.JS
 import * as commentJson from 'comment-json'
+import { spawnSync } from 'child_process'
 import fs from 'fs-extra'
 import chalk from 'chalk'
 import path from 'path'
@@ -49,12 +50,17 @@ import parseTimings from './modules/parseTimings.js'
 import Profile from './@types/Profile.d.js'
 import TestInterface from './@types/TestInterface.js'
 import { Combination } from './@types/Combination.js'
+import Timing from './@types/timing.js'
 
 // Core app modules
 import generateCombinations from './modules/generateCombinations.js'
 import subtitles from './modules/subtitles.js'
 import SSMLParser from './modules/SSMLParser.js'
 import testTTSLength from './modules/testTTSLength.js'
+import parseSubtitles from './modules/parseSubtitles.js'
+import addSubtitles from './modules/addSubtitles.js'
+import addAudios from './modules/addAudio.js'
+import postFX from './modules/postFX.js'
 
 // DotENV
 import { config } from 'dotenv'
@@ -139,6 +145,11 @@ namespace Main {
          */
         if (crashStatus) {
             await crashMessage()
+        } else {
+            const emptyOutputDirSpinner = ora('Emptying Output Directory, you have 15 seconds to cancel if you have important files').start()
+            await Wait.seconds(15)
+            fs.emptyDirSync(path.join(__dirname, '../../../../output/generated-videos'))
+            emptyOutputDirSpinner.succeed('Output Directory emptied successfully!')
         }
 
         /**
@@ -213,8 +224,11 @@ namespace Main {
              * * Uses GPT API to generate the subtitles
              */
             const subtitlesSpinner = ora('Generating Subtitles').start()
-            const subtitlesAttempts: number = 0
-            await subtitles(test, currentCombination, profile, subtitlesAttempts)
+
+            // eslint-disable-next-line prefer-const
+            let attempts = { count: 0 }
+
+            await subtitles(test, currentCombination, profile, attempts)
             subtitlesSpinner.succeed('Subtitles generated successfully!')
 
             /**
@@ -284,14 +298,68 @@ namespace Main {
              * * Uses Montreal Forced Aligner to generate the timings
              */
             const parseTimingsSpinner = ora('Parsing Timings').start()
-            const timings = await parseTimings(test, profile) as Array<object>
+            const timings = await parseTimings(test, profile) as Array<Timing>
             parseTimingsSpinner.succeed('Timings parsed successfully!')
 
-            breakLine()
-            console.log(timings)
+            /**
+             * ? Parse Subtitles
+             * ! TEST LABEL = "parseTimings"
+             * ! EXTENDS parseTimings
+             * * Parses the subtitles from the timings
+             * * Uses the timings to generate the subtitles
+             */
+            const parseSubtitlesSpinner = ora('Parsing Subtitles').start()
+            await parseSubtitles(test, timings)
+            parseSubtitlesSpinner.succeed('Subtitles parsed successfully!')
+
+            /**
+             * ? Add Subtitles
+             * ! TEST LABEL = "addSubtitles"
+             * * Adds the subtitles to the video
+             */
+            const addSubtitlesSpinner = ora('Adding Subtitles').start()
+            await addSubtitles(test)
+            addSubtitlesSpinner.succeed('Subtitles added successfully!')
+
+            /**
+             * ? Add Audios
+             * ! TEST LABEL = "addAudios"
+             * * Adds the audio to the video
+             */
+            const addAudiosSpinner = ora('Adding Audio').start()
+            await addAudios(test)
+            addAudiosSpinner.succeed('Audio added successfully!')
+
+            /**
+             * ? PostFX Function
+             * ! TEST LABEL = "postFX"
+             * * Adds postFX to the video
+             */
+            const postFXSpinner = ora('Adding PostFX').start()
+            await postFX(test, profile)
+            postFXSpinner.succeed('PostFX added successfully!')
+
+
+            // * Copy the video to the output folder
+            const outputDir = path.join(__dirname, '../../../../output/generated-videos')
+            const video = path.join(__dirname, '../../files/generate-model/temporary/postfx/output.mp4')
+
+            // * Copy with ffmpeg and add name + index
+            spawnSync('ffmpeg', ['-i', video, '-c', 'copy', '-y', path.join(outputDir, `video ${x + 1} .mp4`)])
+
+            /**
+             * * Update Combinations
+             */
+            if (test.updateCombinations) {
+                currentCombination[currentCombination.length - 1] = true
+
+                // * Update the main combination
+                combinations[x] = currentCombination
+
+                // * Write the combinations to file
+                fs.writeFileSync(combinationFilePath, JSON.stringify(combinations, null, 4))
+            }
         }
-
-
 
         /**
          * * Close App
